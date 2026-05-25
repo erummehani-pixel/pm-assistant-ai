@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Only POST allowed" });
   }
@@ -11,32 +10,33 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing input" });
     }
 
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "OPENAI_API_KEY is missing in Vercel. Check Environment Variables and redeploy."
+      });
+    }
+
     const prompt = `
 You are a senior Product Manager assistant.
 
 Mode: ${mode}
 
-Convert the following notes into structured execution output.
-
-Return sections:
-
+Convert these notes into:
 1. Executive Summary
 2. Key Decisions
 3. Missing / Unclear Areas
 4. PRD Draft
 5. User Stories
-6. Acceptance Criteria (numbered)
+6. Acceptance Criteria
 7. Dependencies
 8. Risk Analysis
 9. QA Checklist
 10. Stakeholder Update
 11. Go / No-Go Recommendation
 
-Rules:
-- Be concise
-- Do not assume missing facts
-- Flag gaps clearly
-- Make output practical for engineering + business
+Be structured, concise, and practical.
 
 Notes:
 ${input}
@@ -46,7 +46,7 @@ ${input}
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: "gpt-4.1-mini",
@@ -57,13 +57,13 @@ ${input}
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(500).json({
-        error: data.error?.message || "OpenAI error"
+      return res.status(response.status).json({
+        error: data.error?.message || "OpenAI API error"
       });
     }
 
     return res.status(200).json({
-      result: data.output_text || "No output"
+      result: data.output_text || "No output generated"
     });
 
   } catch (error) {
