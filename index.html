@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PM Assistant AI</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f4f7fb;
+      color: #111827;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: auto;
+      padding: 36px 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #111827, #312e81);
+      color: white;
+      border-radius: 28px;
+      padding: 44px;
+      margin-bottom: 28px;
+      box-shadow: 0 24px 70px rgba(17, 24, 39, 0.22);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.14);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 52px;
+      line-height: 1.05;
+      margin: 0 0 16px;
+      letter-spacing: -1.8px;
+    }
+
+    .hero p {
+      max-width: 790px;
+      font-size: 18px;
+      line-height: 1.65;
+      color: #e5e7eb;
+      margin: 0;
+    }
+
+    .quick-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .info-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: #6b7280;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .workspace {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 22px 60px rgba(15, 23, 42, 0.10);
+    }
+
+    .workspace-header {
+      padding: 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: #ffffff;
+    }
+
+    .assistant-title {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .assistant-subtitle {
+      margin-top: 5px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .status {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+
+    .panel {
+      padding: 26px;
+    }
+
+    .left {
+      background: #fbfdff;
+      border-right: 1px solid #e5e7eb;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 9px;
+    }
+
+    .helper {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      resize: vertical;
+      border: 1px solid #d1d5db;
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 15px;
+      line-height: 1.65;
+      outline: none;
+      color: #111827;
+    }
+
+    textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+
+    .sample-box {
+      margin-top: 20px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .sample-title {
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .sample-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    select, button {
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 15px;
+      border: 1px solid #d1d5db;
+    }
+
+    select {
+      background: white;
+      min-width: 205px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 900;
+      border: none;
+      transition: 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #111827;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .btn-light {
+      background: white;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .output-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .output-title {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .output {
+      min-height: 560px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 22px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      font-size: 15px;
+      color: #1f2937;
+    }
+
+    .placeholder {
+      color: #6b7280;
+      background: linear-gradient(180deg, #ffffff, #f9fafb);
+    }
+
+    .welcome {
+      border: 1px dashed #c7d2fe;
+      background: #f8faff;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 14px;
+    }
+
+    .welcome h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: #111827;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    .error {
+      color: #b91c1c;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .loading {
+      color: #374151;
+      background: #f9fafb;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    @media (max-width: 920px) {
+      h1 { font-size: 38px; }
+      .quick-info { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .left { border-right: none; border-bottom: 1px solid #e5e7eb; }
+      .hero { padding: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <section class="hero">
+      <div class="eyebrow">AI ProductOps Workspace</div>
+      <h1>Hey, I’m ready to help you turn messy product thinking into execution.</h1>
+      <p>
+        PM Assistant AI converts raw notes, meeting takeaways, feature ideas, and stakeholder inputs into structured product artifacts your team can act on.
+      </p>
+    </section>
+
+    <section class="quick-info">
+      <div class="info-card">
+        <h3>What it does</h3>
+        <p>Turns rough notes into PRDs, user stories, acceptance criteria, risks, QA checks, and stakeholder updates.</p>
+      </div>
+      <div class="info-card">
+        <h3>Who it helps</h3>
+        <p>Product managers, business analysts, delivery teams, startup founders, and anyone managing product execution.</p>
+      </div>
+      <div class="info-card">
+        <h3>Why it matters</h3>
+        <p>Reduces manual documentation effort and helps teams catch gaps before development, QA, or launch.</p>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="workspace-header">
+        <div>
+          <div class="assistant-title">PM Assistant AI</div>
+          <div class="assistant-subtitle">Your execution copilot for product notes, requirements, and launch clarity.</div>
+        </div>
+        <div class="status" id="status">Ready to assist</div>
+      </div>
+
+      <div class="grid">
+        <div class="panel left">
+          <label for="inputText">Enter Product Notes</label>
+          <div class="helper">
+            Paste meeting notes, rough feature details, stakeholder feedback, sprint discussion points, or business requirements.
+          </div>
+
+          <textarea id="inputText" placeholder="Example: We are changing activation fee from $0 to $30 for new users only. Existing users should not be impacted..."></textarea>
+
+          <div class="sample-box">
+            <div class="sample-title">Prompt samples to begin</div>
+            <div class="sample-buttons">
+              <button class="btn-light" onclick="loadSample('fee')">Activation Fee Change</button>
+              <button class="btn-light" onclick="loadSample('promo')">Promo Launch</button>
+              <button class="btn-light" onclick="loadSample('feature')">Feature Rollout</button>
+              <button class="btn-light" onclick="loadSample('meeting')">Meeting Notes</button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <select id="mode">
+              <option>Full PM Analysis</option>
+              <option>PRD Draft</option>
+              <option>Jira Stories</option>
+              <option>Risk Review</option>
+              <option>Stakeholder Update</option>
+            </select>
+
+            <button class="btn-primary" onclick="generateOutput()">Generate Output</button>
+            <button class="btn-danger" onclick="cancelGeneration()">Cancel</button>
+            <button class="btn-secondary" onclick="restartApp()">Restart</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="output-toolbar">
+            <div class="output-title">Generated PM Output</div>
+            <div class="output-actions">
+              <button class="btn-light" onclick="copyOutput()">Copy Output</button>
+              <button class="btn-light" onclick="clearOutput()">Clear Output</button>
+            </div>
+          </div>
+
+          <div id="output" class="output placeholder">
+            <div class="welcome">
+              <h2>Welcome. Let’s make your PM work cleaner, faster, and sharper.</h2>
+              <p>
+                Choose a sample prompt or paste your own product notes. I’ll help structure the input into execution-ready outputs your stakeholders can understand and your delivery team can use.
+              </p>
+            </div>
+            Suggested flow:
+            1. Paste raw notes
+            2. Select analysis mode
+            3. Generate structured PM output
+            4. Copy and use it in docs, Jira, Slack, or stakeholder updates
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Portfolio-ready AI product prototype for product execution, requirements clarity, and stakeholder alignment.
+    </div>
+  </div>
+
+<script>
+let controller = null;
+
+const samples = {
+  fee: `Activation fee is changing from $0 to $30 for new users only.
+Existing users should not be impacted.
+Some promo screens may still show $0 activation fee.
+Engineering says this needs 1 sprint.
+Marketing wants immediate rollout.
+Billing alignment needs confirmation.
+No rollback plan has been finalized yet.
+Customer support needs messaging before launch.`,
+
+  promo: `We are launching a new acquisition promo for new users.
+Promo gives 100% discount on the first line for 3 months.
+It should apply to both new numbers and port-in numbers.
+Promo should not stack with existing bundle discounts.
+Agents need visibility in RC.
+Customer-facing purchase flow should show the discount clearly.
+Reporting should capture promo code, applied date, customer ID, MSISDN, and account status.`,
+
+  feature: `We are adding a new self-serve plan change feature in MyAccount.
+Customers can upgrade immediately but downgrades should apply from the next billing cycle.
+No proration on upgrades.
+Legacy plan users should see a warning before moving to new rate card plans.
+Engineering needs API confirmation.
+QA needs test cases for active, suspended, and disconnected accounts.`,
+
+  meeting: `Meeting notes:
+Marketing wants launch by next Friday.
+Engineering says API dependency is not ready.
+QA has not received final acceptance criteria.
+Support team needs customer-facing FAQs.
+Leadership wants a go/no-go update by Wednesday.
+Open question: should existing users be included in phase 1?
+No final decision on rollback owner.`
+};
+
+function loadSample(type) {
+  document.getElementById("inputText").value = samples[type];
+  document.getElementById("status").textContent = "Sample loaded";
+}
+
+async function generateOutput() {
+  const input = document.getElementById("inputText").value.trim();
+  const mode = document.getElementById("mode").value;
+  const output = document.getElementById("output");
+  const status = document.getElementById("status");
+
+  if (!input) {
+    output.className = "output error";
+    output.textContent = "Please enter product notes or choose a sample prompt first.";
+    status.textContent = "Input needed";
+    return;
+  }
+
+  controller = new AbortController();
+
+  status.textContent = "Generating...";
+  output.className = "output loading";
+  output.textContent = "Working on your PM output. Please hold for a moment...";
+
+  try {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ input, mode }),
+      signal: controller.signal
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong.");
+    }
+
+    output.className = "output";
+    output.textContent = data.result;
+    status.textContent = "Output ready";
+    controller = null;
+
+  } catch (error) {
+    if (error.name === "AbortError") {
+      output.className = "output placeholder";
+      output.textContent = "Generation cancelled. You can edit your notes and try again.";
+      status.textContent = "Cancelled";
+    } else {
+      output.className = "output error";
+      output.textContent = "Error: " + error.message;
+      status.textContent = "Error";
+    }
+  }
+}
+
+function cancelGeneration() {
+  if (controller) {
+    controller.abort();
+    controller = null;
+  } else {
+    document.getElementById("status").textContent = "Nothing to cancel";
+  }
+}
+
+function restartApp() {
+  document.getElementById("inputText").value = "";
+  document.getElementById("mode").value = "Full PM Analysis";
+  document.getElementById("status").textContent = "Ready to assist";
+  document.getElementById("output").className = "output placeholder";
+  document.getElementById("output").innerHTML = `
+    <div class="welcome">
+      <h2>Welcome. Let’s make your PM work cleaner, faster, and sharper.</h2>
+      <p>
+        Choose a sample prompt or paste your own product notes. I’ll help structure the input into execution-ready outputs your stakeholders can understand and your delivery team can use.
+      </p>
+    </div>
+    Suggested flow:
+    1. Paste raw notes
+    2. Select analysis mode
+    3. Generate structured PM output
+    4. Copy and use it in docs, Jira, Slack, or stakeholder updates
+  `;
+}
+
+function clearOutput() {
+  document.getElementById("output").className = "output placeholder";
+  document.getElementById("output").textContent = "Output cleared. Generate a new PM output when ready.";
+  document.getElementById("status").textContent = "Output cleared";
+}
+
+function copyOutput() {
+  const outputText = document.getElementById("output").textContent;
+  navigator.clipboard.writeText(outputText);
+  document.getElementById("status").textContent = "Copied";
+}
+</script>
+</body>
+</html>
