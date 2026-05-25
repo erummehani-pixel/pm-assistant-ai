@@ -62,10 +62,14 @@ ${input}
       });
     }
 
-    return res.status(200).json({
-      result: data.output_text || "No output generated"
-    });
+  const text =
+  data.output?.[0]?.content?.[0]?.text ||
+  data.output_text ||
+  "No output generated";
 
+return res.status(200).json({
+  result: text
+});
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
